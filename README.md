@@ -1,51 +1,71 @@
-# unm-termux-prebuild
+# Pre-compiled Unmminer for Termux
 
-Pre-compiled `nmminer` khusus untuk dijalankan di lingkungan Termux (Android). Repository ini memudahkan Anda untuk langsung menambang (mining) koin tanpa harus melakukan proses kompilasi/build yang rumit dari awal di perangkat Android Anda.
+This is a WIP repo for pre-compiled Unmminer binaries with latest Termux(v0.118.0) and latest Clang(v17.0.6).
 
-## ⚠️ Peringatan (DWYOR - Do With Your Own Risk)
-- **Risiko Overheat:** Mining koin (CPU mining) di smartphone dapat menyebabkan perangkat menjadi sangat panas.
-- **Kerusakan Baterai & Hardware:** Suhu panas yang ekstrem dalam waktu yang lama dapat memperpendek umur baterai hingga merusak komponen internal smartphone.
-- **DWYOR:** Gunakan script dan binari ini sepenuhnya dengan risiko Anda sendiri. Penulis/pembuat repository ini **TIDAK BERTANGGUNG JAWAB** atas segala kerusakan apa pun pada perangkat Anda.
+# **`Disclaimer: I accept no warranties or liabilities on this repo. Use it at your own risk!!!`**
 
-## 📦 Isi File `.tar.gz`
-- `nmminer` - File binary miner yang sudah di-compile khusus untuk Termux.
-- `start.sh` - Script bash pelengkap untuk menjalankan miner secara otomatis dengan mudah.
-- `config.json` - File pengaturan (pool, wallet, threads).
+# **`This is for any ARMv8 device`**
 
-## 🚀 Cara Penggunaan
+# **`If Termux apk does not install, this is done purposely. The provided apk will only work on arm 64-bit operating system, which in turn requires arm 64-bit hardware. This is to avoid wasting time for users and myself. (Mining on 32-bit devices is not profitable)`**
 
-1. **Update dan Install Dependensi Termux**
-   Buka Termux dan jalankan perintah berikut:
-   ```bash
-   pkg update && pkg upgrade -y
-   pkg install wget tar nano -y
-   ```
+## Installation:
 
-2. **Download File Release**
-   Download file `unm-termux-prebuild.tar.gz` dari Github (atau gunakan `wget`):
-   ```bash
-   wget https://github.com/USERNAME_ANDA/unm-termux-prebuild/releases/download/v1.0/unm-termux-prebuild.tar.gz
-   ```
+1. Download & install latest arm64-v8a [Termux](https://github.com/termux/termux-app/releases/download/v0.118.0/termux-app_v0.118.0+github-debug_arm64-v8a.apk):
 
-3. **Ekstrak File**
-   ```bash
-   tar -xf unm-termux-prebuild.tar.gz
-   cd unm-termux-prebuild
-   ```
+```text
+https://github.com/termux/termux-app/releases/download/v0.118.0/termux-app_v0.118.0+github-debug_arm64-v8a.apk
+```
 
-4. **Edit Konfigurasi (Wajib)**
-   Edit file `config.json` sesuai dengan pool dan alamat wallet Anda:
-   ```bash
-   nano config.json
-   ```
-   Ubah alamat wallet menjadi milik Anda, dan atur bagian `threads` sesuai dengan jumlah core CPU Android Anda (Sangat disarankan tidak memakai *max thread* untuk menghindari overheat parah). Simpan dengan menekan `CTRL + X`, lalu `Y`, lalu `Enter`.
+2. Get Termux ready:
 
-5. **Jalankan Miner**
-   Cukup jalankan script `start.sh`. Script ini akan otomatis memberikan izin eksekusi (`chmod +x`) jika diperlukan.
-   ```bash
-   ./start.sh
-   ```
-   *(Untuk menghentikan proses mining, tekan `CTRL + C`)*
+* Type `y` then enter key in any prompts!
 
----
-**Catatan:** Selalu awasi suhu smartphone saat melakukan mining. Jika dirasa terlalu panas, kurangi jumlah `threads` pada file `config.json`. Happy Mining! ⛏️
+```bash
+yes | pkg update -y
+yes | pkg upgrade -y
+yes | pkg install libjansson wget nano -y
+```
+
+3. Download Unmminer, config, start:
+
+```bash
+mkdir unmminer && cd unmminer
+wget https://raw.githubusercontent.com/MDA-Byte/Unmminer-termux/main/unmminer
+wget https://raw.githubusercontent.com/MDA-Byte/Unmminer-termux/main/config.json
+wget https://raw.githubusercontent.com/MDA-Byte/Unmminer-termux/main/start.sh
+chmod +x unmminer start.sh
+```
+
+## Usage:
+
+1. Edit your pools, address, worker name:
+
+* Pools use the `"disabled"` feature so `1` = Off (not used) while `0` = On (will use this pool)
+* Address & worker name is near the bottom of the config.json in format `address here.worker name here`
+* Optionally use Unmminer API for monitoring
+
+```bash
+nano config.json
+```
+
+2. Start Unmminer with:
+
+```bash
+./start.sh
+```
+
+3. Close Unmminer with:
+
+```text
+CTRL + C
+```
+
+## Tips & Tricks:
+
+* If Termux can't complete update & upgrade, please clear app cache and data.
+* Disable battery manager and battery optimization for Termux app.
+* If you have a "protect battery" option to stop charge at 85% or similar, enable it to help preserve battery health.
+* If you long press anywhere within Termux then click `More`, there is an option to `Keep screen on`.
+* Alternatively, you can pull down the notification drawer and expand Termux notification to `Acquire wakelock` this will enable you to mine with the screen off **(NOTE! not all devices obey this rule, it is a hit or miss)**.
+* Use a pool with low latency to your location/internet.
+* Give the miner/stratum time to stabilize hashrate (~30m-1h).
