@@ -5,12 +5,10 @@
 # ==========================================
 clear
 
-# Fungsi untuk mencetak teks dengan gradasi warna animasi
 print_gradient_animated() {
     local text="$1"
-    local delay=0.03 # Sedikit lebih cepat di bash agar mulus
+    local delay=0.03
 
-    # Pisahkan teks berdasarkan baris baru
     IFS=$'\n' read -rd '' -a lines <<< "$text"
     for line in "${lines[@]}"; do
         local len=${#line}
@@ -18,17 +16,18 @@ print_gradient_animated() {
         for (( i=0; i<$len; i++ )); do
             local c="${line:$i:1}"
             
-            # Hitung RGB gradasi dari Merah/Magenta ke Cyan/Biru
+            if [[ "$c" == '\' ]]; then
+                c="\\\\"
+            fi
+            
             local r=$(( 255 - (i * 255 / 55) ))
             if (( r < 0 )); then r=0; fi
             local g=$(( i * 255 / 55 ))
             if (( g > 255 )); then g=255; fi
             local b=255
             
-            # Tambahkan karakter dengan kode warna RGB escape ke string output
             out+="\e[38;2;${r};${g};${b}m${c}"
         done
-        # Print baris dengan warna dan reset di akhir, lalu tunggu (delay)
         echo -e "${out}\e[0m"
         sleep "$delay"
     done
@@ -36,10 +35,10 @@ print_gradient_animated() {
 
 ASCII_ART="
     __  ___ ____   ___       ______         __  
-   /  |/  // __ \ /   |     /_  __/___  ___/ /_ 
-  / /|_/ // / / // /| |      / / / _ \/ ___/ __ \
+   /  |/  // __ \\ /   |     /_  __/___  ___/ /_ 
+  / /|_/ // / / // /| |      / / / _ \\/ ___/ __ \\
  / /  / // /_/ // ___ | _   / / /  __/ /__/ / / /
-/_/  /_//_____//_/  |_|(_) /_/  \___/\___/_/ /_/ 
+/_/  /_//_____//_/  |_|(_) /_/  \\___/\\___/_/ /_/ 
 
         [ MDA-Tech - Elite Automation ]
 "
@@ -57,21 +56,43 @@ termux-wake-lock 2>/dev/null || true
 # Set working directory to the script's location
 cd "$(dirname "$0")"
 
-# Make sure nmminer is executable
-if [ -f "./nmminer" ]; then
-    chmod +x nmminer
-    # Start nmminer with config.json
-    echo -e "\e[1;32m[+] Starting nmminer...\e[0m"
-    ./nmminer -c config.json
+CONFIG_FILE="config.json"
+
+if [ ! -f "$CONFIG_FILE" ]; then
+    echo -e "\e[1;31m[-] Error: File '$CONFIG_FILE' tidak ditemukan!\e[0m"
+    exit 1
+fi
+
+# Parsing manual JSON menggunakan grep dan sed (tanpa jq agar aman di Termux murni)
+POOL=$(grep '"pool"' "$CONFIG_FILE" | sed -E 's/.*"pool"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/')
+WALLET=$(grep '"wallet"' "$CONFIG_FILE" | sed -E 's/.*"wallet"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/')
+WORKER=$(grep '"worker"' "$CONFIG_FILE" | sed -E 's/.*"worker"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/')
+THREADS=$(grep '"threads"' "$CONFIG_FILE" | sed -E 's/.*"threads"[[:space:]]*:[[:space:]]*"?([a-zA-Z0-9]+)"?.*/\1/')
+
+# Gabungkan wallet dan worker jika worker diisi
+if [ -n "$WORKER" ] && [ "$WORKER" != "null" ]; then
+    FULL_WALLET="${WALLET}.${WORKER}"
 else
-    # Jika nmminer belum ada, tapi unmminer ada, kita jalankan unmminer
-    # (Hanya sebagai fallback karena di ls tadi ada file unmminer)
-    if [ -f "./unmminer" ]; then
-        chmod +x unmminer
-        echo -e "\e[1;32m[+] Starting unmminer...\e[0m"
-        ./unmminer -c config.json
-    else
-        echo -e "\e[1;31m[-] Error: nmminer executable not found!\e[0m"
-        exit 1
-    fi
+    FULL_WALLET="$WALLET"
+fi
+
+echo -e "\e[1;36m[*] Memuat Konfigurasi (config.json):\e[0m"
+echo -e "    - Pool   : $POOL"
+echo -e "    - Wallet : $FULL_WALLET"
+echo -e "    - Threads: $THREADS\n"
+
+if [ ! -f "./nmminer" ]; then
+    echo -e "\e[1;31m[-] Error: File binari 'nmminer' tidak ditemukan!\e[0m"
+    exit 1
+fi
+
+chmod +x nmminer
+
+echo -e "\e[1;32m[+] Starting nmminer...\e[0m"
+
+# Eksekusi nmminer dengan argumen dari config.json
+if [ "$THREADS" = "auto" ] || [ -z "$THREADS" ]; then
+    ./nmminer -o "$POOL" -u "$FULL_WALLET"
+else
+    ./nmminer -o "$POOL" -u "$FULL_WALLET" -t "$THREADS"
 fi

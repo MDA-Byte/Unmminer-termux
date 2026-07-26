@@ -1,6 +1,6 @@
-# Pre-compiled Unmminer for Termux
+# Pre-compiled nmminer for Termux
 
-This is a WIP repo for pre-compiled Unmminer binaries with latest Termux(v0.118.0) and latest Clang(v17.0.6).
+This is a WIP repo for pre-compiled `nmminer` binaries (for Cereblix / CRB) with latest Termux(v0.118.0) and latest Clang(v17.0.6).
 
 # **`Disclaimer: I accept no warranties or liabilities on this repo. Use it at your own risk!!!`**
 
@@ -23,38 +23,39 @@ https://github.com/termux/termux-app/releases/download/v0.118.0/termux-app_v0.11
 ```bash
 yes | pkg update -y
 yes | pkg upgrade -y
-yes | pkg install libjansson wget nano -y
+yes | pkg install wget nano -y
 ```
 
-3. Download Unmminer, config, start:
+3. Download nmminer, config, start:
 
 ```bash
-mkdir unmminer && cd unmminer
-wget https://raw.githubusercontent.com/MDA-Byte/Unmminer-termux/main/unmminer
+mkdir nmminer && cd nmminer
+wget https://raw.githubusercontent.com/MDA-Byte/Unmminer-termux/main/nmminer
 wget https://raw.githubusercontent.com/MDA-Byte/Unmminer-termux/main/config.json
 wget https://raw.githubusercontent.com/MDA-Byte/Unmminer-termux/main/start.sh
-chmod +x unmminer start.sh
+chmod +x nmminer start.sh
 ```
 
 ## Usage:
 
-1. Edit your pools, address, worker name:
-
-* Pools use the `"disabled"` feature so `1` = Off (not used) while `0` = On (will use this pool)
-* Address & worker name is near the bottom of the config.json in format `address here.worker name here`
-* Optionally use Unmminer API for monitoring
+1. Edit your pool, wallet address, and threads in `config.json`:
 
 ```bash
 nano config.json
 ```
+*   `pool`: Your mining pool URL (default stratum.cereblix.com:3333)
+*   `wallet`: Your CRB payout address
+*   `worker`: Your rig/worker name (will be appended as `.worker` to your address)
+*   `threads`: Number of threads, or `"auto"` for automatic detection
 
-2. Start Unmminer with:
+2. Start nmminer with the animated MDA-Tech banner:
 
 ```bash
 ./start.sh
 ```
+*(The script will automatically parse `config.json` and pass the correct arguments to nmminer).*
 
-3. Close Unmminer with:
+3. Close nmminer with:
 
 ```text
 CTRL + C
@@ -67,5 +68,4 @@ CTRL + C
 * If you have a "protect battery" option to stop charge at 85% or similar, enable it to help preserve battery health.
 * If you long press anywhere within Termux then click `More`, there is an option to `Keep screen on`.
 * Alternatively, you can pull down the notification drawer and expand Termux notification to `Acquire wakelock` this will enable you to mine with the screen off **(NOTE! not all devices obey this rule, it is a hit or miss)**.
-* Use a pool with low latency to your location/internet.
 * Give the miner/stratum time to stabilize hashrate (~30m-1h).
