@@ -1,0 +1,7 @@
+{
+  "algo": "verushash",
+  "pool": "stratum+tcp://pool.verus.io:9999",
+  "wallet": "ALAMAT_WALLET_ANDA.WORKER_NAME",
+  "password": "x",
+  "threads": 8
+}
