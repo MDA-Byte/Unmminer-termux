@@ -1,6 +1,6 @@
-# Pre-compiled nmminer for Termux
+# Pre-compiled unmminer for Termux
 
-This is a WIP repo for pre-compiled `nmminer` binaries (for Cereblix / CRB) with latest Termux(v0.118.0) and latest Clang(v17.0.6).
+This is a WIP repo for pre-compiled `unmminer` binaries (for Cereblix / CRB) with latest Termux(v0.118.0) and latest Clang(v17.0.6).
 
 # **`Disclaimer: I accept no warranties or liabilities on this repo. Use it at your own risk!!!`**
 
@@ -26,14 +26,14 @@ yes | pkg upgrade -y
 yes | pkg install wget nano -y
 ```
 
-3. Download nmminer, config, start:
+3. Download unmminer, config, start:
 
 ```bash
-mkdir nmminer && cd nmminer
-wget https://raw.githubusercontent.com/MDA-Byte/Unmminer-termux/main/nmminer
-wget https://raw.githubusercontent.com/MDA-Byte/Unmminer-termux/main/config.json
-wget https://raw.githubusercontent.com/MDA-Byte/Unmminer-termux/main/start.sh
-chmod +x nmminer start.sh
+mkdir unmminer && cd unmminer
+wget https://raw.githubusercontent.com/MDA-Byte/Uunmminer-termux/main/unmminer
+wget https://raw.githubusercontent.com/MDA-Byte/Uunmminer-termux/main/config.json
+wget https://raw.githubusercontent.com/MDA-Byte/Uunmminer-termux/main/start.sh
+chmod +x unmminer start.sh
 ```
 
 ## Usage:
@@ -48,14 +48,14 @@ nano config.json
 *   `worker`: Your rig/worker name (will be appended as `.worker` to your address)
 *   `threads`: Number of threads, or `"auto"` for automatic detection
 
-2. Start nmminer with the animated MDA-Tech banner:
+2. Start unmminer with the animated MDA-Tech banner:
 
 ```bash
 ./start.sh
 ```
-*(The script will automatically parse `config.json` and pass the correct arguments to nmminer).*
+*(The script will automatically parse `config.json` and pass the correct arguments to unmminer).*
 
-3. Close nmminer with:
+3. Close unmminer with:
 
 ```text
 CTRL + C

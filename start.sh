@@ -81,18 +81,18 @@ echo -e "    - Pool   : $POOL"
 echo -e "    - Wallet : $FULL_WALLET"
 echo -e "    - Threads: $THREADS\n"
 
-if [ ! -f "./nmminer" ]; then
-    echo -e "\e[1;31m[-] Error: File binari 'nmminer' tidak ditemukan!\e[0m"
+if [ ! -f "./unmminer" ]; then
+    echo -e "\e[1;31m[-] Error: File binari 'unmminer' tidak ditemukan!\e[0m"
     exit 1
 fi
 
-chmod +x nmminer
+chmod +x unmminer
 
-echo -e "\e[1;32m[+] Starting nmminer...\e[0m"
+echo -e "\e[1;32m[+] Starting unmminer...\e[0m"
 
-# Eksekusi nmminer dengan argumen dari config.json
+# Eksekusi unmminer dengan argumen dari config.json
 if [ "$THREADS" = "auto" ] || [ -z "$THREADS" ]; then
-    ./nmminer -o "$POOL" -u "$FULL_WALLET"
+    ./unmminer -o "$POOL" -u "$FULL_WALLET"
 else
-    ./nmminer -o "$POOL" -u "$FULL_WALLET" -t "$THREADS"
+    ./unmminer -o "$POOL" -u "$FULL_WALLET" -t "$THREADS"
 fi
