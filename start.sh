@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ==========================================
-# Banner Animasi MDA-Tech (Bash Port)
+# MDA-Tech Animated Banner (Bash Port)
 # ==========================================
 clear
 
@@ -59,30 +59,31 @@ cd "$(dirname "$0")"
 CONFIG_FILE="config.json"
 
 if [ ! -f "$CONFIG_FILE" ]; then
-    echo -e "\e[1;31m[-] Error: File '$CONFIG_FILE' tidak ditemukan!\e[0m"
+    echo -e "\e[1;31m[-] Error: File '$CONFIG_FILE' not found!\e[0m"
+    echo -e "\e[1;33m[*] Please ensure config.json exists in the same directory.\e[0m"
     exit 1
 fi
 
-# Parsing manual JSON menggunakan grep dan sed (tanpa jq agar aman di Termux murni)
+# Manual JSON parsing using grep and sed
 POOL=$(grep '"pool"' "$CONFIG_FILE" | sed -E 's/.*"pool"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/')
 WALLET=$(grep '"wallet"' "$CONFIG_FILE" | sed -E 's/.*"wallet"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/')
 WORKER=$(grep '"worker"' "$CONFIG_FILE" | sed -E 's/.*"worker"[[:space:]]*:[[:space:]]*"([^"]+)".*/\1/')
 THREADS=$(grep '"threads"' "$CONFIG_FILE" | sed -E 's/.*"threads"[[:space:]]*:[[:space:]]*"?([a-zA-Z0-9]+)"?.*/\1/')
 
-# Gabungkan wallet dan worker jika worker diisi
+# Combine wallet and worker name if worker is set
 if [ -n "$WORKER" ] && [ "$WORKER" != "null" ]; then
     FULL_WALLET="${WALLET}.${WORKER}"
 else
     FULL_WALLET="$WALLET"
 fi
 
-echo -e "\e[1;36m[*] Memuat Konfigurasi (config.json):\e[0m"
+echo -e "\e[1;36m[*] Loading Configuration (config.json):\e[0m"
 echo -e "    - Pool   : $POOL"
 echo -e "    - Wallet : $FULL_WALLET"
 echo -e "    - Threads: $THREADS\n"
 
 if [ ! -f "./unmminer" ]; then
-    echo -e "\e[1;31m[-] Error: File binari 'unmminer' tidak ditemukan!\e[0m"
+    echo -e "\e[1;31m[-] Error: Executable binary 'unmminer' not found!\e[0m"
     exit 1
 fi
 
@@ -90,7 +91,7 @@ chmod +x unmminer
 
 echo -e "\e[1;32m[+] Starting unmminer...\e[0m"
 
-# Eksekusi unmminer dengan argumen dari config.json
+# Execute unmminer with arguments parsed from config.json
 if [ "$THREADS" = "auto" ] || [ -z "$THREADS" ]; then
     ./unmminer -o "$POOL" -u "$FULL_WALLET"
 else
