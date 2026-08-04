@@ -72,7 +72,16 @@ CTRL + C
 
 ---
 
-## 💡 Tips & Tricks for Mobile Mining
+## 💡 Troubleshooting: Signal 4 (Illegal Instruction)
+If the miner immediately crashes and you see an error like `Signal 4` or `Illegal Instruction`, **your CPU is not supported by this specific pre-compiled binary.**
+
+This happens because this binary is optimized with specific hardware instructions (like Crypto Extensions) that older or low-end processors might lack. 
+
+**Solution:** You cannot use this pre-compiled binary. You must compile the miner from its original source code directly on your device so the compiler can adapt to your specific CPU.
+
+---
+
+## 🔋 Tips & Tricks for Mobile Mining
 
 * **Troubleshooting Updates:** If Termux fails to complete `update` & `upgrade`, try clearing the app's cache and data in your Android settings.
 * **Battery Management:** Disable battery manager and remove battery optimization restrictions for the Termux app in your phone settings to prevent the OS from killing the miner in the background.
